@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 /*
 #define U_L 100000000b
@@ -26,6 +27,12 @@ typedef struct
 void mirTheWall(mirrorobj* mirrorhall);
 
 void printMap(mirrorobj* mirrorhall);
+
+int isDirect(mirrorobj* mirrorhall, 
+	long long int Ax, long long int Ay);
+
+void travTheHall(mirrorobj* mirrorhall, long long int* out);
+
 
 int main(int argc, char const *argv[])
 {
@@ -79,20 +86,22 @@ int main(int argc, char const *argv[])
 		//mirTheWall(mirrorhall);
 		
 		while(
-				((mirrorhall.Xx + 0.5 - 1) * 2 <= mirrorhall.D) ||
-				((mirrorhall.Xy + 0.5 - 1) * 2 <= mirrorhall.D) ||
-				(((mirrorhall.W - mirrorhall.Xx - 0.5 - 1)) * 2 <= mirrorhall.D) ||
-				(((mirrorhall.H - mirrorhall.Xy - 0.5 - 1)) * 2 <= mirrorhall.D)
+				((mirrorhall.Xx + 0.5 - 1) <= mirrorhall.D) ||
+				((mirrorhall.Xy + 0.5 - 1) <= mirrorhall.D) ||
+				(((mirrorhall.W - mirrorhall.Xx - 0.5 - 1)) <= mirrorhall.D) ||
+				(((mirrorhall.H - mirrorhall.Xy - 0.5 - 1)) <= mirrorhall.D)
 				){
 			mirTheWall(&mirrorhall);
 		}
 		//mirTheWall(&mirrorhall);
 
 
-		printMap(&mirrorhall);
+		//printMap(&mirrorhall);
 
 		//mirTheNode();
 		//travTheHall();
+		travTheHall(&mirrorhall, &out);
+		//printMap(&mirrorhall);
 
 
 
@@ -237,4 +246,129 @@ void printMap(mirrorobj* mirrorhall){
 	printf("\n");
 
 	free(tmpline);
+}
+
+int isDirect(mirrorobj* mirrorhall, 
+	long long int Ax, long long int Ay){
+
+	long long int i, j, k, Bx, By;
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+	long long int D = (*mirrorhall).D;
+	char* map = (*mirrorhall).map;
+	long long int Xx = (*mirrorhall).Xx;
+	long long int Xy = (*mirrorhall).Xy;
+
+	int ret = 0;
+
+	if ((Ax == Xx) && (Ay == Xy))
+	{
+		return 0;
+	}
+
+	if (Ax == Xx)
+	{
+		if ((Ay - Xy) * (Ay - Xy) > D * D)
+			return 0;
+		else
+		{
+			Bx = Xx;
+			By = Xy + ((Ay - Xy) > 0) * 1 + ((Ay - Xy) < 0) * -1;
+			if(By == Ay) return 1;
+			while((Ay - Xy) * (Ay - Xy) > (By - Xy) * (By - Xy)){
+				if((map[Bx + W * By] == 'Y')||map[Bx + W * By] == 'X'){
+					//map[Ax + W * Ay] = 'Y';
+					return 0;
+				}
+				else if ((map[Bx + W * By] == '#'))
+				{
+					return 0;
+				}
+				By += ((Ay - Xy) > 0) * 1 + ((Ay - Xy) < 0) * -1;
+			}
+			return 1;
+		}
+	}
+
+	if (Ay == Xy)
+	{
+		if ((Ax - Xx) * (Ax - Xx) > D * D)
+			return 0;
+		else
+		{
+			Bx = Xx + ((Ax - Xx) > 0) * 1 + ((Ax - Xx) < 0) * -1;
+			By = Xy;
+			if(Bx == Ax)return 1;
+			while((Ax - Xx) * (Ax - Xx) > (Bx - Xx) * (Bx - Xx)){
+				if((map[Bx + W * By] == 'Y')||map[Bx + W * By] == 'X'){
+					//map[Ax + W * Ay] = 'Y';
+					return 0;
+				}
+				else if ((map[Bx + W * By] == '#'))
+				{
+					return 0;
+				}
+				Bx += ((Ax - Xx) > 0) * 1 + ((Ax - Xx) < 0) * -1;
+			}
+			return 1;
+		}
+	}
+	
+	if ( (Ax - Xx) * (Ax - Xx) + (Ay - Xy) * (Ay - Xy) <= D * D)
+	{
+		//return 1;
+		Bx = Xx + ((Ax - Xx) > 0) * 1 + ((Ax - Xx) < 0) * -1;
+		By = (Ay - Xy) * (Bx - Xx) / (Ax - Xx) + Xy;
+		while((Bx - Xx) * (Bx - Xx) + (By - Xy) * (By - Xy) <
+				 (Ax - Xx) * (Ax - Xx) + (Ay - Xy) * (Ay - Xy))
+		{
+			if((Ay - Xy) * (Bx - Xx) / (Ax - Xx) * (Ax - Xx) == (Ay - Xy) * (Bx - Xx)){
+				if((map[Bx + W * By] == 'Y')||map[Bx + W * By] == 'X'){
+					map[Ax + W * Ay] = 'Y';
+					return 0;
+				}
+				else if ((map[Bx + W * By] == '#'))
+				{
+					//map[Bx + W * By] = 'S';
+					return 0;
+				}
+			}
+			Bx += ((Ax - Xx) > 0) * 1 + ((Ax - Xx) < 0) * -1;
+			By = (Ay - Xy) * (Bx - Xx) / (Ax - Xx) + Xy;
+		}
+		return 1;
+	}
+	else return 0;
+
+
+	return ret;
+}
+
+void travTheHall(mirrorobj* mirrorhall, long long int* out){
+
+	long long int i, j, k;
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+	long long int D = (*mirrorhall).D;
+	char* map = (*mirrorhall).map;
+	long long int Xx = (*mirrorhall).Xx;
+	long long int Xy = (*mirrorhall).Xy;
+
+
+	for (j = 0; j < W; ++j)
+	{
+		for (k = 0; k < H; ++k)
+		{
+			if (map[j + W * k] == 'X')
+			{
+				//printf("%lld, %lld\n", j ,k);
+				if(isDirect(mirrorhall, j, k)){
+					map[j + W * k] = 'Y';//die
+					*out += 1;
+				}
+			}
+		}
+	}
 }
