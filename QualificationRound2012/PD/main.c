@@ -33,6 +33,16 @@ int isDirect(mirrorobj* mirrorhall,
 
 void travTheHall(mirrorobj* mirrorhall, long long int* out);
 
+void travNearX(mirrorobj* mirrorhall, long long int* out);
+
+mirrorobj* mirTheNodeR(mirrorobj* mirrorhall, long long int Ax, long long int Ay);
+mirrorobj* mirTheNodeL(mirrorobj* mirrorhall, long long int Ax, long long int Ay);
+mirrorobj* mirTheNodeU(mirrorobj* mirrorhall, long long int Ax, long long int Ay);
+mirrorobj* mirTheNodeD(mirrorobj* mirrorhall, long long int Ax, long long int Ay);
+
+void revTheMirH(mirrorobj* mirrorhall);
+void revTheMirV(mirrorobj* mirrorhall);
+
 
 int main(int argc, char const *argv[])
 {
@@ -101,14 +111,22 @@ int main(int argc, char const *argv[])
 		//mirTheNode();
 		//travTheHall();
 		travTheHall(&mirrorhall, &out);
+		
+		printMap(&mirrorhall);
+
+		//revTheMirH(&mirrorhall);
 		//printMap(&mirrorhall);
+		//revTheMirV(&mirrorhall);
+		//printMap(&mirrorhall);
+
+		travNearX(&mirrorhall, &out);
 
 
 
 
 
 		sprintf(ocase, "Case #%lld: %lld", i + 1, out);
-		//printf("%s\n", ocase);
+		printf("%s\n", ocase);
 		
 		if (i != T - 1)
 		{
@@ -199,7 +217,7 @@ void mirTheWall(mirrorobj* mirrorhall){
 		}
 	}
 
-	// copy to the up
+	// copy to the down
 	Y0 = H * 4 - 7;
 	for (i = 0; i < newW; ++i)
 	{
@@ -325,7 +343,7 @@ int isDirect(mirrorobj* mirrorhall,
 		{
 			if((Ay - Xy) * (Bx - Xx) / (Ax - Xx) * (Ax - Xx) == (Ay - Xy) * (Bx - Xx)){
 				if((map[Bx + W * By] == 'Y')||map[Bx + W * By] == 'X'){
-					map[Ax + W * Ay] = 'Y';
+					//map[Ax + W * Ay] = 'Y';
 					return 0;
 				}
 				else if ((map[Bx + W * By] == '#'))
@@ -371,4 +389,174 @@ void travTheHall(mirrorobj* mirrorhall, long long int* out){
 			}
 		}
 	}
+}
+
+void travNearX(mirrorobj* mirrorhall, long long int* out){
+
+	long long int i, j, k;
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+	long long int D = (*mirrorhall).D;
+	char* map = (*mirrorhall).map;
+	long long int Xx = (*mirrorhall).Xx;
+	long long int Xy = (*mirrorhall).Xy;
+
+	mirrorobj* temp;
+
+
+	for (j = Xx - D; j < Xx + D; ++j)
+	{
+		for (k = Xy - D; k < Xy + D; ++k)
+		{
+			if (map[j + W * k] == '#')
+			{
+				//printf("%lld, %lld\n", j ,k);
+				temp = mirTheNodeL(mirrorhall, j, k);
+				printMap(temp);
+				//if(isDirect(mirrorhall, j, k)){
+					//map[j + W * k] = 'Y';//die
+					//*out += 1;
+				//}
+				free((*temp).map);
+				free(temp);
+			}
+		}
+	}
+}
+
+// mirror to Right, so Xx is on the left of Ax
+mirrorobj* mirTheNodeR(mirrorobj* mirrorhall, long long int Ax, long long int Ay){
+	mirrorobj* ret;
+	ret = calloc(1, sizeof(mirrorobj));
+	memcpy(ret, mirrorhall, sizeof(mirrorobj));
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+	long long int D = (*mirrorhall).D;
+	long long int newW = Ax + D;
+	long long int newH = H;
+
+	long long int i, X0, Y0;
+	long long int j, k, newi, newj, oldi, oldj;
+	
+	long long int Xx, Xy;
+	Xx = (*mirrorhall).Xx;
+	Xy = (*mirrorhall).Xy;
+
+	char* newmap = calloc(newH * newW, sizeof(char));
+	memset(newmap, '.', newW * newH);
+
+	for (j = 0; j < H; ++j)
+	{
+		memcpy(newmap + newW * j, (*mirrorhall).map + W * j, W );
+	}
+
+
+	// copy to the right
+	//X0 = W * 2 - 1;
+	for (i = 0; i < D; ++i)
+	{
+		oldi = Ax - 1 - i;
+		newi = Ax + i;
+		for (j = 0; j < H; ++j)
+		{
+			oldj = j;
+			newj = j;
+			newmap[newi + newW * newj] = (*mirrorhall).map[oldi + W * oldj];
+		}
+	}
+
+	(*ret).map = newmap;
+	(*ret).W = newW;
+	(*ret).H = newH;
+	(*ret).Xx = Xx;
+	(*ret).Xy = Xy;
+
+	return ret;
+
+}
+
+// mirror to left, so Xx is on the right of Ax
+mirrorobj* mirTheNodeL(mirrorobj* mirrorhall, long long int Ax, long long int Ay){
+	mirrorobj* ret;
+	mirrorobj* temp;
+	ret = calloc(1, sizeof(mirrorobj));
+	memcpy(ret, mirrorhall, sizeof(mirrorobj));
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+
+	(*ret).map = calloc(H * W + 1, sizeof(char));
+	memset((*ret).map, '.', H * W + 1);
+
+	revTheMirV(ret);
+
+	temp = mirTheNodeR(ret, W - Ax - 1, Ay);
+	free((*ret).map);
+	free(ret);
+	ret = temp;
+
+	revTheMirV(ret);
+
+	return ret;
+
+}
+mirrorobj* mirTheNodeU(mirrorobj* mirrorhall, long long int Ax, long long int Ay);
+mirrorobj* mirTheNodeD(mirrorobj* mirrorhall, long long int Ax, long long int Ay);
+
+void revTheMirV(mirrorobj* mirrorhall){
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+	long long int D = (*mirrorhall).D;
+
+	long long int Xx, Xy;
+	Xx = (*mirrorhall).Xx;
+	Xy = (*mirrorhall).Xy;
+	(*mirrorhall).Xx = W - Xx - 1;
+	(*mirrorhall).Xy = Xy;
+
+	long long int j, k;
+
+	char* newmap = calloc(H * W, sizeof(char));
+	memset(newmap, '.', H * W);
+
+	for (j = 0; j < H; ++j)
+	{
+		for (k = 0; k < W; ++k)
+		{
+			newmap[W - k - 1 + j * W] = (*mirrorhall).map[k + j * W];
+		}
+	}
+	free((*mirrorhall).map);
+	(*mirrorhall).map = newmap;
+}
+
+void revTheMirH(mirrorobj* mirrorhall){
+
+	long long int W = (*mirrorhall).W;
+	long long int H = (*mirrorhall).H;
+	long long int D = (*mirrorhall).D;
+
+	long long int Xx, Xy;
+	Xx = (*mirrorhall).Xx;
+	Xy = (*mirrorhall).Xy;
+	(*mirrorhall).Xx = Xx;
+	(*mirrorhall).Xy = H - Xy - 1;
+
+	long long int j, k;
+
+	char* newmap = calloc(H * W, sizeof(char));
+	memset(newmap, '.', H * W);
+
+	for (j = 0; j < H; ++j)
+	{
+		for (k = 0; k < W; ++k)
+		{
+			newmap[k + (H - j - 1) * W] = (*mirrorhall).map[k + j * W];
+		}
+	}
+	free((*mirrorhall).map);
+	(*mirrorhall).map = newmap;
 }
