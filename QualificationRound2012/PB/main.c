@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
 	{
 		fscanf(fin, "%d ", &N);
 		fscanf(fin, "%d ", &S);
-		fscanf(fin, "%d ", &p);
+		fscanf(fin, "%d", &p);
 
 		n3p2 = 0;
 		n3p43p3 = 0;
@@ -32,11 +32,15 @@ int main(int argc, char const *argv[])
 		{
 			fscanf(fin, " %d", &(t[j]));
 		}
-		fscanf(fin, " %d\n", &(t[j]));
+		if (i != T - 1)
+			fscanf(fin, " %d\n", &(t[j]));
+		else
+			fscanf(fin, " %d", &(t[j]));
 
 		for (j = 0; j < N; ++j)
 		{
-			if (t[j] >= 3*p - 2)
+			//printf("%d\n", t[j]);
+			if (t[j] >= (3*p - 2))
 				n3p2++;
 			if (p == 1)
 			{
@@ -45,6 +49,8 @@ int main(int argc, char const *argv[])
 			else if ((t[j] == (3*p - 4)) || (t[j] == (3*p - 3)))
 				n3p43p3++;
 		}
+		//printf("%d\n", n3p43p3);
+		//printf("%d\n", n3p2);
 
 		if (S < n3p43p3)
 			out = S + n3p2;
