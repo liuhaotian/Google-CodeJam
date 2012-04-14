@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
 		}
 		//printf("%llu\n", A0);
 
-		tab = calloc(B, sizeof(char));
+		tab = calloc(B + 1, sizeof(char));
 		for (j = A; j <= B; ++j)
 		{
 			if(tab[j] != 0)continue;
