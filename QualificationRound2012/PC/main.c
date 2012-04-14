@@ -8,47 +8,72 @@ int main(int argc, char const *argv[])
 	FILE * fout = fopen("output.out", "w");
 	
 	int T;
-	unsigned long int A, B;
+	unsigned long long A, B;
 	int i;
-	long int j, k;
+	unsigned long long j, k;
 	fscanf(fin, "%d\n", &T);
 
-	char in[40];
 	unsigned long long out;
 	char ocase[40];
-	char * tab;
-	unsigned long int tmp;
-	unsigned long int A0;
+	char* tab;
+	unsigned long long tmp;
+	unsigned long long A0;
+	int digi;
 
 	for (i = 0; i < T; ++i)
 	{
-		fscanf(fin, "%lu ", &A);
-		//printf("%lu\n", A);
-		fscanf(fin, "%lu", &B);
-		//printf("%lu\n", B);
+		fscanf(fin, "%llu ", &A);
+		//printf("%llu\n", A);
+		fscanf(fin, "%llu\n", &B);
+		//printf("%llu\n", B);
 		out = 0;
+		digi = 1;
+		tmp = 0;
 
-		for (A0 = 1; A/A0 > 10; A0 *= 10)
+		for (A0 = 1; A/A0 >= 10; A0 *= 10)
 		{
-			;
+			digi++;
 		}
-		//printf("%ld\n", A0);
+		//printf("%llu\n", A0);
 
 		tab = calloc(B, sizeof(char));
 		for (j = A; j <= B; ++j)
 		{
-			for (k = 10; k <= A0; ++k)
+			if(tab[j] != 0)continue;
+			tab[j] = 1;
+			//printf("%llu\n", j);
+			for (k = 1; k <= A0; k *= 10)
 			{
+				//printf("%llu\n", k);
 				tmp = j / k + (j % k) * (A0 / k) * 10;
-				if(tmp < A)continue;
-				if(tmp > B)continue;
-				tab[ tmp ] = 1;
+				//printf("%llu\n", tmp);
+				//if(tmp < A)continue;
+				//if(tmp > B)continue;
+				if ((tmp >= A)&&(tmp <= B))
+				{
+					if (tab[tmp] == 0){
+						tab[tmp] = 1;
+						tab[j]++;
+						//printf("%llu\n", tmp);
+						//printf("%d\n", tab[tmp]);
+						//printf("%d\n", tab[j]);
+
+					}
+				}
+				//tab[ tmp ] == (tmp >= A)&&(tmp <= B);
+				//tab[j] += (tmp >= A)&&(tmp <= B);
+				//printf("%d\n", tab[tmp]);
+				//printf("%llu\n", j);
 			}
+			out += tab[j] * (tab[j] - 1) / 2;
+
 		}
+		/*
 		for (j = A; j <= B; ++j)
 		{
-			out += tab[i];
-		}
+			out += tab[j];
+		}*/
+		//printf("%llu\n", out);
 		free(tab);
 
 		sprintf(ocase, "Case #%d: %llu", i+1, out);
