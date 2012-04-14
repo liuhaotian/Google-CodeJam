@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
 	tab['y'-'a']='a';
 	tab['z'-'a']='q';
 
-	char in[100];
+	char in[120];
 	char out[120];
 	char ocase[20];
 	int offset;
@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
 		fgets(out, 120, fout);
 		//printf("%s\n", in);
 		//printf("%s\n", out);
-		sprintf(ocase, "Case #%d: ", T);
+		sprintf(ocase, "Case #%d: ", i);
 		offset = strlen(ocase);
 		//printf("tste\n");
 		for (j = 0; in[j] != 0; ++j)
@@ -55,11 +55,11 @@ int main(int argc, char const *argv[])
 	for (i = 0; i < T; ++i)
 	{
 		memset(ocase, 0, 20);
-		memset(in, 0, 100);
+		memset(in, 0, 120);
 		memset(out, 0, 120);
-		sprintf(ocase, "Case #%d: ", i);
+		sprintf(ocase, "Case #%d: ", i+1);
 		strcpy(out, ocase);
-		fgets(in, 100, fin);
+		fgets(in, 120, fin);
 		fscanf(fin, "\n", &temp);
 
 		offset = strlen(ocase);
@@ -69,10 +69,22 @@ int main(int argc, char const *argv[])
 			{
 				out[j + offset] = tab[in[j]-'a'];
 			}
+			else if (in[i] == '\n')
+				out[j + offset] = 0;
 			else
 				out[j + offset] = ' ';
 		}
-		printf("%s\n", out);
+		//printf("%s\n", out);
+		if (out[strlen(out) - 1] == ' ')
+		{
+			out[strlen(out) - 1] = 0;
+		}
+		if (i != T -1)
+		{
+			fprintf (fout, "%s\n", out);
+		}
+		else
+			fprintf (fout, "%s", out);
 	}
 
 	fclose(fin);
