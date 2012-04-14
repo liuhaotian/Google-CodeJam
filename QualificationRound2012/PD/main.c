@@ -109,14 +109,14 @@ int main(int argc, char const *argv[])
 
 		sprintf(ocase, "Case #%lld: %lld", i + 1, out);
 		//printf("%s\n", ocase);
-		/*
+		
 		if (i != T - 1)
 		{
 			fprintf (fout, "%s\n", ocase);
 		}
 		else
 			fprintf (fout, "%s", ocase);
-		*/
+		
 	}
 
 	fclose(fin);
