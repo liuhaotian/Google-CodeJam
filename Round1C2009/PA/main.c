@@ -28,6 +28,7 @@ long mintime(char* const time_string){
 		}
 			
 	}
+	if(basenum == 1) basenum = 2;
 
 	//printf("%ld\n", basenum);
 
@@ -48,7 +49,7 @@ int main(int argc, char const *argv[])
 	FILE * fout = fopen("output.out", "w");
 	
 	long T;
-	char time_string[20];
+	char time_string[80];
 	long i;
 	long out;
 
@@ -57,7 +58,7 @@ int main(int argc, char const *argv[])
 
 	for (i = 0; i < T; ++i)
 	{
-		memset(time_string, 0, 20);
+		memset(time_string, 0, 80);
 		fscanf(fin, "%s\n", time_string);
 		//printf("%s\n", time_string);
 		
