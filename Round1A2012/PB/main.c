@@ -10,9 +10,11 @@ int main(int argc, char const *argv[])
 	FILE * fin = fopen("input.in", "r");
 	FILE * fout = fopen("output.out", "w");
 	
-	long T, N, PD, PG;
-	long i;
+	long T, N;
+	long i, j;
+	long * req[1000];
 	long out;
+	char bad[] = "Too Bad";
 
 	fscanf(fin, "%ld\n", &T);
 	char ocase[40];
@@ -20,13 +22,23 @@ int main(int argc, char const *argv[])
 
 	for (i = 0; i < T; ++i)
 	{
-		fscanf(fin, "%ld %ld %ld\n", &N, &PD, &PG);
-		//printf("%ld %ld %ld\n", N, PD, PG);
-		
-		//out = mintime(time_string);
-		out = calc(N, PD, PG);
+		fscanf(fin, "%ld\n", &N);
+		printf("%ld\n", N);
 
-		sprintf(ocase, "Case #%ld: %s", i + 1, out?out_true:out_false);
+		req[0] = calloc(N, sizeof(long) * 2);
+
+
+		for (j = 0; j < N; ++j)
+		{
+			req[j] = req[0] + 2 * j;
+			fscanf(fin, "%ld %ld\n", &req[j][0], &req[j][1]);
+			printf("%ld %ld\n", req[j][0], req[j][1]);
+		}
+
+		//out = mintime(time_string);
+		out = 0;
+
+		sprintf(ocase, "Case #%ld: %ld", i + 1, out);
 		//printf("%s\n", ocase);
 		
 		if (i != T - 1)
@@ -35,6 +47,8 @@ int main(int argc, char const *argv[])
 		}
 		else
 			fprintf (fout, "%s", ocase);
+
+		free(req[0]);
 		
 	}
 
