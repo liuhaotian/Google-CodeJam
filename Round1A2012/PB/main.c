@@ -43,6 +43,42 @@ long findmina(long * req, long N){
 	return imin;
 }
 
+long find2(long * req, long N){
+	long i;
+	long max = 0, imax = -1;
+	for (i = 0; i < N; i++)
+	{
+		if (req[4*i + 1] >= max && req[4*i + 1] <= nstar)
+		{
+			if (req[4*i+3] != 0 || req[4*i+2] != 0)
+			{
+				continue;
+			}
+			max = req[4*i + 1] ;
+			imax = i;
+		}
+	}
+	return imax;
+}
+
+long find1(long * req, long N){
+	long i;
+	long max = 0, imax = -1;
+	for (i = 0; i < N; i++)
+	{
+		if (req[4*i + 1] >= max && req[4*i] <= nstar)
+		{
+			if (req[4*i+3] != 0 || req[4*i+2] != 0)
+			{
+				continue;
+			}
+			max = req[4*i + 1] ;
+			imax = i;
+		}
+	}
+	return imax;
+}
+
 long getstar(long *req, long index){
 	if (index%4 == 0)
 	{
@@ -97,6 +133,14 @@ int main(int argc, char const *argv[])
 		//printf("%ld\n", findmaxb(req, N));
 
 		while(1){
+			tempi = find2(req, N);
+			if (tempi != -1 && req[4*tempi + 1] <= nstar)
+			{
+				nstar += getstar(req, 4*tempi + 1);
+				printf("2 step:%ld star:%ld\n", tempi, nstar);
+				out++;
+				continue;
+			}
 			tempi = findmaxb(req, N);
 			if (tempi != -1 && req[4*tempi + 1] <= nstar)
 			{
