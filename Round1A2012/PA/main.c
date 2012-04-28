@@ -11,9 +11,10 @@ int main(int argc, char const *argv[])
 	FILE * fout = fopen("output.out", "w");
 	
 	long T, A, B;
-	long i, j;
+	long i, j, k;
 	double out;
 	float * P;
+	double * E;
 
 	fscanf(fin, "%ld\n", &T);
 	char ocase[100];
@@ -25,8 +26,9 @@ int main(int argc, char const *argv[])
 		//printf("%ld %ld\n", A, B);
 		//printf("%d\n", (int)sizeof(double));
 
-		P = calloc(A, sizeof(float));
-		for (j = 0; j < A - 1; ++j)
+		P = calloc(A + 1, sizeof(float));
+		E = calloc(A + 1, sizeof(double));
+		for (j = 1; j < A; ++j)
 		{
 			fscanf(fin, "%f ", &P[j]);
 			//printf("%f\n", P[j]);
@@ -34,8 +36,41 @@ int main(int argc, char const *argv[])
 		fscanf(fin, "%f\n", &P[j]);
 		//printf("%f\n", P[j]);
 		
-		//out = mintime(time_string);
-		out = 0;
+		for (j = 1; j < A; ++j)
+		{	
+			E[j] = 1;
+			for (k = 1; k <= A - j; ++k)
+			{
+				E[j] *= P[k];
+			}
+			E[j] = (1 - E[j]);
+			//printf("%.7f\n", E[j]);
+
+			E[j] = (B - A + 1) + 2 * j + E[j] * (B + 1);
+			//printf("%.7f\n", E[j]);
+		}
+		
+		//keep
+		E[0] = 1;
+		for (k = 1; k <= A; ++k)
+		{
+			E[0] *= P[k];
+		}
+		E[0] = (B - A + 1) + (1 - E[0]) * (B + 1);
+		//printf("%.7f\n", E[0]);
+
+		E[A] = B + 2;
+
+		out = B + 2;
+		for (j = 0; j <= A; ++j)
+		{
+			if (E[j] <= out)
+			{
+				out = E[j];
+			}
+		}
+		//printf("\n");
+		//out = 0;
 
 		sprintf(ocase, "Case #%ld: %.6f", i + 1, out);
 		//printf("%s\n", ocase);
@@ -48,7 +83,7 @@ int main(int argc, char const *argv[])
 			fprintf (fout, "%s", ocase);
 		
 
-
+		free(E);
 		free(P);
 	}
 
