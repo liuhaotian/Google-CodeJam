@@ -27,16 +27,16 @@ long findmaxb(long * req, long N){
 
 long findmina(long * req, long N){
 	long i;
-	long min = 2001, imin = -1;
+	long max = 0, imin = -1;
 	for (i = 0; i < N; i++)
 	{
-		if (req[4*i] <= min && req[4*i] <= nstar)
+		if (req[4*i + 1] >= max && req[4*i] <= nstar)
 		{
 			if (req[4*i+2] != 0)
 			{
 				continue;
 			}
-			min = req[4*i] ;
+			max = req[4*i+1] ;
 			imin = i;
 		}
 	}
@@ -128,7 +128,7 @@ int main(int argc, char const *argv[])
 		for (j = 0; j < N; ++j)
 		{
 			fscanf(fin, "%ld %ld\n", &req[4*j], &req[4*j+1]);
-			printf("%ld %ld\n", req[4*j], req[4*j+1]);
+			//printf("%ld %ld\n", req[4*j], req[4*j+1]);
 		}
 		//printf("%ld\n", findmaxb(req, N));
 
@@ -137,7 +137,7 @@ int main(int argc, char const *argv[])
 			if (tempi != -1 && req[4*tempi + 1] <= nstar)
 			{
 				nstar += getstar(req, 4*tempi + 1);
-				printf("2 step:%ld star:%ld\n", tempi, nstar);
+				//printf("2 step:%ld star:%ld\n", tempi, nstar);
 				out++;
 				continue;
 			}
@@ -145,7 +145,7 @@ int main(int argc, char const *argv[])
 			if (tempi != -1 && req[4*tempi + 1] <= nstar)
 			{
 				nstar += getstar(req, 4*tempi + 1);
-				printf("b step:%ld star:%ld\n", tempi, nstar);
+				//printf("b step:%ld star:%ld\n", tempi, nstar);
 				out++;
 				continue;
 			}
@@ -153,7 +153,7 @@ int main(int argc, char const *argv[])
 			if (tempi != -1 && req[4*tempi] <= nstar)
 			{
 				nstar += getstar(req, 4*tempi);
-				printf("a step:%ld star:%ld\n", tempi, nstar);
+				//printf("a step:%ld star:%ld\n", tempi, nstar);
 				out++;
 				continue;
 			}
