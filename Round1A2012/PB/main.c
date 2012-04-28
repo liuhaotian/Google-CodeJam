@@ -161,7 +161,7 @@ int main(int argc, char const *argv[])
 		}
 
 		//out = mintime(time_string);
-		if (out == 0)
+		if (nstar != 2*N)
 			sprintf(ocase, "Case #%ld: %s", i + 1, bad);
 		else
 		sprintf(ocase, "Case #%ld: %ld", i + 1, out);
