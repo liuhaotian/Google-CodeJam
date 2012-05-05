@@ -72,7 +72,7 @@ int main(int argc, char const *argv[])
 				}
 			}
 			//printf("%ld:w:%ld,l:%ld\n", N, winloss[j][0], winloss[j][1]);
-			wp[j] = 1.0 * winloss[j][0] / winloss[j][1];
+			wp[j] = 1.0 * winloss[j][0] / (winloss[j][1] + winloss[j][0]);
 		}
 
 		for (j = 0; j < N; ++j)
@@ -81,8 +81,11 @@ int main(int argc, char const *argv[])
 			for (k = 0; k < N; ++k)
 			{
 				if(k == j)continue;
-				owp[j] += 
+				if(tab[k][j] == '.')continue;
+				owp[j] += 1.0 * (winloss[j][0] - (tab[k][j] - '0')) / ((winloss[j][1] - ('1' - tab[k][j])) + (winloss[j][0] - (tab[k][j] - '0')));
+				printf("%ld:,%f\n", k, 1.0 * (winloss[j][0] - (tab[k][j] - '0')) / ((winloss[j][1] - ('1' - tab[k][j])) + (winloss[j][0] - (tab[k][j] - '0'))));
 			}
+			printf("owp :%f\n", owp[j]);
 		}
 
 		
