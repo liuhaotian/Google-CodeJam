@@ -16,33 +16,6 @@ long gcd(long a,long b)
 	}
 }
 
-struct tab
-{
-	long nwin;
-	long nloss;
-} ptab[101];
-
-long calc(long N, long PD, long PG){
-	long ret = 0;
-	long D, G;
-
-	if (N < ptab[PD].nwin + ptab[PD].nloss)
-	{
-		return 0;
-	}
-	if (PG == 100 && PD != 100)
-	{
-		return 0;
-	}
-	if (PG == 0 && PD != 0)
-	{
-		return 0;
-	}
-
-	return 1;
-
-}
-
 int main(int argc, char const *argv[])
 {
 	FILE * fin = fopen("input.in", "r");
@@ -51,22 +24,10 @@ int main(int argc, char const *argv[])
 	long T, N, PD, PG;
 	long i;
 	long out;
-	char out_true[] = "Possible";
-	char out_false[] = "Broken";
 
 	fscanf(fin, "%ld\n", &T);
 	char ocase[40];
 
-	for (i = 1; i < 100; ++i)
-	{
-		ptab[i].nwin = i / gcd(i, 100 - i);
-		ptab[i].nloss = (100 - i) / gcd(i, 100 - i);
-	}
-	ptab[0].nwin = 0;
-	ptab[0].nloss = 1;
-
-	ptab[100].nwin = 1;
-	ptab[100].nloss = 0;
 
 	for (i = 0; i < T; ++i)
 	{
