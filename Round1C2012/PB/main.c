@@ -8,46 +8,34 @@ double D;
 double car[2000][2];
 double acc[250];
 
+double deltaT(){
+	return (sqrt(v * v - 2 * a * (d - D)) - v) / a;
+}
+
 long update(long j){
 	double dt = car[j][0] - car[j - 1][0];
-	printf("%lf\n", dt);
+	//printf("%lf\n", dt);
 	double vcar = (car[j][1] - car[j-1][1]) / dt;
 	double dmine = v*dt + 0.5*a*dt*dt + d;
-	
 
 	if (dmine > car[j][1])
 	{
 		dmine = car[j][1];
-		if (dmine > D)
-		{
-			double dcar = D;
-			dt = (dcar - car[j-1][1])/vcar;
-			dmine = v*dt + 0.5*a*dt*dt + d;
-			if (dmine > dcar)
-			{
-				d = dcar;
-				v = vcar;
-				t = car[j-1][0] + dt;
-			}
-			else{
-				return 1;
-			}
-			return 1;
-		}
 		d = car[j][1];
-		v = vcar;
+		v = sqrt(v*v + 2*a*(car[j][1] - car[j-1][1]));
 		t = car[j][0];
+		return 1;
 	}
 	else{
 		
-		if (dmine > D)
+		if (car[j][1] == D)
 		{
+			t = t + deltaT();
+			d = D;
 			
 			return 1;
 		}
-		d = dmine;
-		v = v + a * dt;
-		t = car[j][0];
+		return 1;
 	}
 	return 1;
 }
@@ -97,15 +85,23 @@ int main(int argc, char const *argv[])
 			t = 0;
 			v = 0;
 			a = acc[j];
+
+			if (N == 1)
+			{
+				out[j] = deltaT();
+				break;
+			}
+			else if (car[N - 1][1] > D)
+			{
+				car[N - 1][0] = (D - car[N - 2][1]) / (car[N - 1][1] - car[N - 2][1]) * (car[N - 1][0] - car[N - 2][0]) + car[N - 2][0];
+				car[N - 1][1] = D;
+			}
+
 			for (k = 1; k < N; ++k)
 			{
 				update(k);
-				printf("%lf,%lf,%lf,%lf\n", t,d,v,a);
-			}
-			if (d < D)
-			{
-				t += (-v + sqrt(v*v-4*0.5*a*(d-D)))/(2*0.5*a);
-				//t += dt;
+				//printf("%lf,%lf,%lf,%lf\n", t,d,v,a);
+				if (d == D)break;
 			}
 			out[j] = t;
 		}
