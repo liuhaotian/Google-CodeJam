@@ -71,6 +71,15 @@ int main(int argc, char const *argv[])
 			//printf("%lf %lf\n", car[j][0], car[j][1]);
 		}
 
+		for (j = 0; j < N; ++j)
+		{
+			if (car[j][1] >= D)
+			{
+				N = j + 1;
+				break;
+			}
+		}
+
 		for (j = 0; j < A - 1; ++j)
 		{
 			fscanf(fin, "%lf ", &acc[j]);
@@ -89,7 +98,7 @@ int main(int argc, char const *argv[])
 			if (N == 1)
 			{
 				out[j] = deltaT();
-				break;
+				continue;
 			}
 			else if (car[N - 1][1] > D)
 			{
@@ -116,16 +125,16 @@ int main(int argc, char const *argv[])
 			fprintf (fout, "%s\n", ocase);
 			for (j = 0; j < A; ++j)
 			{
-				fprintf (fout, "%.6lf\n", out[j]);
+				fprintf (fout, "%.7lf\n", out[j]);
 			}
 		}
 		else{
 			fprintf (fout, "%s\n", ocase);
 			for (j = 0; j < A - 1; ++j)
 			{
-				fprintf (fout, "%.6lf\n", out[j]);
+				fprintf (fout, "%.7lf\n", out[j]);
 			}
-			fprintf (fout, "%.6lf", out[j]);
+			fprintf (fout, "%.7lf", out[j]);
 		}
 			//fprintf (fout, "%s", ocase);
 		
