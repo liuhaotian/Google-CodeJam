@@ -64,6 +64,7 @@ int main(int argc, char const *argv[])
 
 		memset(car, 0, 2000*2*sizeof(double));
 		memset(acc, 0, 250*sizeof(double));
+		memset(out, 0, 250*sizeof(double));
 
 		for (j = 0; j < N; ++j)
 		{
@@ -94,6 +95,8 @@ int main(int argc, char const *argv[])
 			t = 0;
 			v = 0;
 			a = acc[j];
+			out[j] = 0;
+			double wait = 0;
 
 			if (N == 1)
 			{
@@ -106,13 +109,13 @@ int main(int argc, char const *argv[])
 				car[N - 1][1] = D;
 			}
 
-			for (k = 1; k < N; ++k)
+			for (k = 0; k < N; ++k)
 			{
-				update(k);
-				//printf("%lf,%lf,%lf,%lf\n", t,d,v,a);
-				if (d == D)break;
+				if(sqrt(car[k][1] * 2 / a) + wait < car[k][0]){
+					wait = car[k][0] - sqrt(car[k][1] * 2 / a);
+				}
 			}
-			out[j] = t;
+			out[j] = wait + sqrt(D * 2 / a);
 		}
 
 
