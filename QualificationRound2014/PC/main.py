@@ -32,6 +32,8 @@ def resolve(mine):
 	if mine.R*mine.C==mine.M+1:
 		mine.mine[0][0] = '.'
 		return mine
+	elif mine.M%2!=0 and (mine.R==2 or mine.C==2):
+		return None
 
 	while len(li)>0:
 		# mine.prt()
@@ -91,6 +93,7 @@ class Mine(object):
 					self.mine[r][c] = '.'
 					clicks.append((r,c))
 
+		clicks = sorted(clicks, reverse=True)
 		self.mine[rr][cc] = clicks
 		return filter(lambda x:x[0]!=rr or x[1]!=cc, clicks)
 
