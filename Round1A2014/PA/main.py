@@ -7,28 +7,20 @@ def main():
 
 	for T in xrange(1,total_T+1):
 		N,L = map(int, f.readline().rstrip('\n').split())
-		outlets = f.readline().rstrip('\n').split()
-		devices = f.readline().rstrip('\n').split()
+		outlets = map(lambda x:int(x, 2), f.readline().rstrip('\n').split())
+		devices = map(lambda x:int(x, 2), f.readline().rstrip('\n').split())
+		# print outlets, devices
+		L = [set(map(lambda x: x^d, outlets)) for d in devices]
+		L = reduce(lambda x, y: x & y, L)
+		# print L
+		# print len(L)
 
-		outlets = map(lambda x:long(x, 2), outlets)
-		devices = map(lambda x:long(x, 2), devices)
+		if len(L) == 0:
+			print 'Case #{}: NOT POSSIBLE'.format(T)
+		else:
+			c = min(sum(1 if x=='1' else 0 for x in bin(l))	for l in list(L))
+			print 'Case #{}: {}'.format(T, c)
 
-		# print N,L
-		# print outlets
-		# print devices
-		# print find(outlets, devices)
-
-		print 'Case #{}: {}'.format(T, find(outlets, devices))
-
-def find(outlets, devices):
-	sets = [set(o^d for o in outlets) for d in devices]
-	r = sets.pop()
-	while sets != []:
-		r &= sets.pop()
-
-	if r ==set():
-		return 'NOT POSSIBLE'
-	return min(bin(x).count('1') for x in r)
 
 
 if __name__ == '__main__':
